@@ -1,5 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-hi there
+<div id="map"></div>
+<div id="form">
+    <form onsubmit="return false;" id="add_placemark_form" role="form">
+        <label for="input_title">Marker title:</label>
+        <input class="form-control" id="input_title" name="title" placeholder="Your title here"/>
+        <input id="input_lat" type="hidden" name="lat"/>
+        <input id="input_lng" type="hidden" name="lng"/>
+        <br/>
+        <button  id="btn_add" type="submit" class="btn btn-default">Submit</button>
+        <span id="alrt-err" class="alrt-span">
+            <div id="alrt" class="alert alert-danger" role="alert">Don't try to fucking cheat on me!</div>
+        </span>
+        <span id="alrt-ok" class="alrt-span">
+            <div id="alrt" class="alert alert-success" role="alert">Saved!</div>
+        </span>
+    </form>
+    <hr/>
+    <div id="marker_info">
+        No marker selected.
+    </div>
+</div>
 {% endblock %}
