@@ -1,15 +1,18 @@
 <!doctype html>
 <html>
-    <head>
-        <title>API</title>
-        {% assets "app_style" %}
-            <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"></script>
-        {% endassets %}
-    <head>
-    <body>
-
-        {% assets "app_js" %}
-            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-        {% endassets %}
-    </body>
+<head>
+<title>API</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% assets "app_style" %}
+<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"></script>
+{% endassets %}
+<head>
+<body>
+<div class="container">
+{% block content %}{% endblock %}
+</div>
+{% assets "app_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+</body>
 </html>

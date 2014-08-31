@@ -1,0 +1,7 @@
+# A sample Guardfile
+# More info at https://github.com/guard/guard#readme
+
+guard 'livereload', :grace_period => 0.5 do
+  watch(%r{templates/.+\.html})
+  watch(%r{(coffee|sass)/.+})
+end
