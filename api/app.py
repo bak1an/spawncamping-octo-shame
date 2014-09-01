@@ -18,6 +18,7 @@ env.register(
     assets.Bundle(
         'jquery/dist/jquery.min.js',
         'bootstrap/dist/js/bootstrap.min.js',
+        'handlebars/handlebars.min.js',
         assets.Bundle(
             'app.coffee',
             filters=['coffeescript']

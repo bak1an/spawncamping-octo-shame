@@ -1,3 +1,16 @@
+_details_template = """
+<div>id: {{ id }}</div>
+<div>title: {{ title }}</div>
+<div>lat: {{ lat }}</div>
+<div>lng: {{ lng }}</div>
+"""
+
+window.App = App = {}
+App.points = {}
+App.template = {}
+App.template.MarkerDetails = Handlebars.compile _details_template
+
+
 show_alert = (type) ->
   $("#alrt-#{type}").fadeIn(500)
   setTimeout () ->
@@ -6,7 +19,22 @@ show_alert = (type) ->
     1500
 
 show_marker_info = (id) ->
-  $("#marker_info").html("marker #{id}")
+  $("#marker_info").html(
+    App.template.MarkerDetails App.points[id][0]
+  )
+
+load_points = () ->
+  $.get "/points/", (resp) ->
+    for p in resp.points
+      do (p) ->
+        loc = new google.maps.LatLng(p.lat, p.lng)
+        marker = new google.maps.Marker {
+         position: loc
+         map: App.map
+        }
+        App.points[p.id] = [p, marker]
+        google.maps.event.addListener marker, 'click', () ->
+          show_marker_info p.id
 
 $ () ->
   $.ajaxSetup
@@ -14,9 +42,6 @@ $ () ->
       "application/json; charset=utf-8"
     error: (jqXHR, exception) ->
       alert "Something went wrong.\n#{jqXHR.status} - #{jqXHR.statusText}"
-
-  window.App = App = {}
-  App.points = {}
 
   init_map = () ->
     options =
@@ -37,6 +62,7 @@ $ () ->
       }
       $("#input_lat").val loc.lat()
       $("#input_lng").val loc.lng()
+    load_points()
   google.maps.event.addDomListener window, 'load', init_map
 
   $('#btn_add').click () ->
@@ -61,15 +87,4 @@ $ () ->
        ,
         'json'
 
-  $.get "/points/", (resp) ->
-    for p in resp.points
-      do (p) ->
-        loc = new google.maps.LatLng(p.lat, p.lng)
-        marker = new google.maps.Marker {
-         position: loc
-         map: App.map
-        }
-        p[p.id] = [p, marker]
-        google.maps.event.addListener marker, 'click', () ->
-          show_marker_info p.id
 
