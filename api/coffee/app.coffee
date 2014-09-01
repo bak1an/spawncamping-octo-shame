@@ -23,18 +23,21 @@ show_marker_info = (id) ->
     App.template.MarkerDetails App.points[id][0]
   )
 
+
+add_point = (p) ->
+  loc = new google.maps.LatLng(p.lat, p.lng)
+  marker = new google.maps.Marker {
+    position: loc
+    map: App.map
+  }
+  App.points[p.id] = [p, marker]
+  google.maps.event.addListener marker, 'click', () ->
+    show_marker_info p.id
+
 load_points = () ->
   $.get "/points/", (resp) ->
     for p in resp.points
-      do (p) ->
-        loc = new google.maps.LatLng(p.lat, p.lng)
-        marker = new google.maps.Marker {
-         position: loc
-         map: App.map
-        }
-        App.points[p.id] = [p, marker]
-        google.maps.event.addListener marker, 'click', () ->
-          show_marker_info p.id
+      add_point(p)
 
 $ () ->
   $.ajaxSetup
@@ -76,7 +79,7 @@ $ () ->
         lat: lat
         lng: lng
         title: title
-      $.post '/points/', JSON.stringify(data), () ->
+      $.post '/points/', JSON.stringify(data), (resp) ->
         $("#input_lat").val ''
         $("#input_lng").val ''
         $("#input_title").val ''
@@ -84,6 +87,8 @@ $ () ->
           App._current_marker.setMap null
           App._current_marker = null
         show_alert 'ok'
+        data.id = resp.id
+        add_point data
        ,
         'json'
 
