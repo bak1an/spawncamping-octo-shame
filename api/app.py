@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify
 from flask.ext import assets
 
+from models import Point
 
 app = Flask(__name__)
 
@@ -48,15 +49,13 @@ def index():
 @app.route("/points/", methods=["GET", "POST"])
 def points():
     if request.method == "POST":
-        print request.get_json()
-        return jsonify(status='ok', id='999')
+        data = request.get_json()
+        point = Point(**data)
+        point.save()
+        return jsonify(status='ok', id=point.id)
     else:
-        mock_points = [
-            {'id': '1', 'lat': '47.85314102183853', 'lng': '35.175132751464844', 'title': 'point1'},
-            {'id': '2', 'lat': '47.84542268497529', 'lng': '35.11676788330078', 'title': 'point2'},
-            {'id': '3', 'lat': '47.80704435615207', 'lng': '35.167236328125', 'title': 'point3'}
-        ]
-        return jsonify(points=mock_points)
+        return jsonify(
+            points=[p.to_dict() for p in Point.query.order_by('id').all()])
 
 
 if __name__ == "__main__":
