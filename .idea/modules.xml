@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/daoGenerator/daoGenerator.iml" filepath="$PROJECT_DIR$/daoGenerator/daoGenerator.iml" />
       <module fileurl="file://$PROJECT_DIR$/spawncamping-octo-shame.iml" filepath="$PROJECT_DIR$/spawncamping-octo-shame.iml" />
     </modules>
   </component>
