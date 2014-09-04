@@ -3,7 +3,6 @@ package so.bak1an.octoshame;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import generated.Point;
 import generated.PointDao;
 import so.bak1an.octoshame.base.BaseActivity;
 import so.bak1an.octoshame.event.PointsLoaded;
-import so.bak1an.octoshame.rest.PointsApi;
 
 public class PointsMap extends BaseActivity {
 
@@ -75,7 +73,6 @@ public class PointsMap extends BaseActivity {
         }
 
         App context = ((App)getApplicationContext());
-        PointsApi api = context.getPointsApi();
         DaoSession session = context.getDaoSession();
         PointDao dao = session.getPointDao();
         List<Point> points = dao.loadAll();

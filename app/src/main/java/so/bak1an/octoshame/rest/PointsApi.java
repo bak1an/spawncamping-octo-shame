@@ -1,8 +1,5 @@
 package so.bak1an.octoshame.rest;
 
-import java.util.List;
-
-import generated.Point;
 import retrofit.http.GET;
 import so.bak1an.octoshame.rest.entity.PointsList;
 

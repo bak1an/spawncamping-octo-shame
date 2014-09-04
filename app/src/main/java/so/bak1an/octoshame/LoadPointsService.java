@@ -2,8 +2,8 @@ package so.bak1an.octoshame;
 
 import android.app.ActivityManager;
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.HashSet;

@@ -1,18 +1,22 @@
 package so.bak1an.octoshame;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import generated.DaoSession;
 import generated.Point;
+import generated.PointDao;
 import so.bak1an.octoshame.base.BaseActivity;
 import so.bak1an.octoshame.event.PointsLoaded;
 
@@ -25,6 +29,28 @@ public class ListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         EventBus.getDefault().register(this);
+
+        App context = ((App)getApplicationContext());
+        DaoSession session = context.getDaoSession();
+        PointDao dao = session.getPointDao();
+        List<Point> points = dao.loadAll();
+        List<String> titles = new ArrayList<String>(points.size());
+        for (Point p : points) {
+            titles.add(p.getTitle());
+        }
+        final ListView listview = (ListView) findViewById(R.id.listview);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, titles);
+        listview.setAdapter(adapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String  itemValue  = (String) listview.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(),
+                        "Position :" + position + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
     }
 
     @Override
