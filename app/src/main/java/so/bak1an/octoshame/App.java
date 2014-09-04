@@ -3,10 +3,14 @@ package so.bak1an.octoshame;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import android.widget.Toast;
 
+import de.greenrobot.event.EventBus;
 import generated.DaoMaster;
 import generated.DaoSession;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import so.bak1an.octoshame.rest.PointsApi;
 
 public class App extends Application {
@@ -23,6 +27,7 @@ public class App extends Application {
         super.onCreate();
         setupDB();
         pointsApi = buildApi();
+        EventBus.getDefault().register(this);
     }
 
     private void setupDB() {
@@ -41,6 +46,12 @@ public class App extends Application {
                 .setEndpoint("http://octo-shame.bak1an.so/")
                 .build()
                 .create(PointsApi.class);
+    }
+
+    public void onEventMainThread(RetrofitError event) {
+        Toast.makeText(this, "Something wrong with API: " + event.getMessage(),
+                Toast.LENGTH_LONG).show();
+        Log.e("ReaderApp", event.getMessage());
     }
 
 }

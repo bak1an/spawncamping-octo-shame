@@ -10,6 +10,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import generated.Point;
+import retrofit.RetrofitError;
 import so.bak1an.octoshame.event.PointsLoaded;
 import so.bak1an.octoshame.rest.PointsApi;
 
@@ -49,8 +50,13 @@ public class LoadPointsService extends IntentService {
 
     private void handleActionLoadPoints() {
         PointsApi api = ((App)getApplicationContext()).getPointsApi();
-        List<Point> points = api.listPoints().getPoints();
-        EventBus.getDefault().post(new PointsLoaded(points));
+        try {
+            List<Point> points = api.listPoints().getPoints();
+            EventBus.getDefault().post(new PointsLoaded(points));
+        }
+        catch (RetrofitError e) {
+            EventBus.getDefault().post(e);
+        }
     }
 
     private static boolean amIRunning(Context context) {
