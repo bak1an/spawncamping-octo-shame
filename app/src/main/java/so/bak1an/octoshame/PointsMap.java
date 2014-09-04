@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,8 +17,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import generated.DaoSession;
 import generated.Point;
+import generated.PointDao;
 import so.bak1an.octoshame.event.PointsLoaded;
+import so.bak1an.octoshame.rest.PointsApi;
 
 public class PointsMap extends FragmentActivity {
 
@@ -68,6 +72,15 @@ public class PointsMap extends FragmentActivity {
             onLocationChanged(loc);
         }
 
+        App context = ((App)getApplicationContext());
+        PointsApi api = context.getPointsApi();
+        DaoSession session = context.getDaoSession();
+        PointDao dao = session.getPointDao();
+        List<Point> points = dao.loadAll();
+        for (Point p : points) {
+            Log.w("MapActivity", "Adding point from database: + " + p.getTitle());
+            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLng())).title(p.getTitle()));
+        }
         LoadPointsService.startActionLoadPoints(this);
     }
 
@@ -80,6 +93,7 @@ public class PointsMap extends FragmentActivity {
     public void onEventMainThread(PointsLoaded event) {
         List<Point> points = event.getPoints();
         for (Point p : points) {
+            Log.w("MapActivity", "Adding point from REST: + " + p.getTitle());
             mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLng())).title(p.getTitle()));
         }
     }

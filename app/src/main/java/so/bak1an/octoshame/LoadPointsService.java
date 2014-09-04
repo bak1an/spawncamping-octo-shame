@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import de.greenrobot.event.EventBus;
+import generated.DaoSession;
 import generated.Point;
+import generated.PointDao;
 import retrofit.RetrofitError;
 import so.bak1an.octoshame.event.PointsLoaded;
 import so.bak1an.octoshame.rest.PointsApi;
@@ -49,10 +54,26 @@ public class LoadPointsService extends IntentService {
     }
 
     private void handleActionLoadPoints() {
-        PointsApi api = ((App)getApplicationContext()).getPointsApi();
+        App context = ((App)getApplicationContext());
+        PointsApi api = context.getPointsApi();
+        DaoSession session = context.getDaoSession();
+        PointDao dao = session.getPointDao();
         try {
             List<Point> points = api.listPoints().getPoints();
-            EventBus.getDefault().post(new PointsLoaded(points));
+            List<Point> newPoints = new LinkedList<Point>();
+            List<Point> oldPoints = dao.loadAll();
+            Set<Long> oldPointsIds = new HashSet<Long>();
+            for (Point p : oldPoints) {
+                oldPointsIds.add(p.getId());
+            }
+            for (Point p : points) {
+                if (oldPointsIds.contains(p.getId())) {
+                    continue;
+                }
+                newPoints.add(p);
+            }
+            dao.insertOrReplaceInTx(newPoints);
+            EventBus.getDefault().post(new PointsLoaded(newPoints));
         }
         catch (RetrofitError e) {
             EventBus.getDefault().post(e);
