@@ -3,37 +3,26 @@ package so.bak1an.octoshame;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import java.util.List;
 
 import generated.DaoMaster;
 import generated.DaoSession;
-import generated.Point;
 import retrofit.RestAdapter;
 import so.bak1an.octoshame.rest.PointsApi;
 
 public class App extends Application {
 
     private DaoSession daoSession;
+    private PointsApi pointsApi;
+
+    public PointsApi getPointsApi() {
+        return pointsApi;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         setupDB();
-        AsyncTask<Void, Void, Void> at = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                List<Point> points = buildApi().listPoints().getPoints();
-                Log.e("APP", String.valueOf(points.size()));
-                for (Point p : points) {
-                    Log.e("POINT", p.getTitle());
-                }
-                return null;
-            }
-        };
-        at.execute();
+        pointsApi = buildApi();
     }
 
     private void setupDB() {

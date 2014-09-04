@@ -3,11 +3,11 @@
     package="so.bak1an.octoshame" >
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".App">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".PointsMap"
             android:label="@string/title_activity_points_map" >
@@ -24,6 +24,11 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <service
+            android:name=".LoadPointsService"
+            android:exported="false" >
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -1,12 +1,23 @@
 package so.bak1an.octoshame;
 
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import generated.Point;
+import so.bak1an.octoshame.event.PointsLoaded;
 
 public class PointsMap extends FragmentActivity {
 
@@ -17,29 +28,16 @@ public class PointsMap extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_points_map);
         setUpMapIfNeeded();
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
+
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -60,6 +58,34 @@ public class PointsMap extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        mMap.setMyLocationEnabled(true);
+
+        LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
+        String provider = lm.getBestProvider(new Criteria(), true);
+        Location loc = lm.getLastKnownLocation(provider);
+
+        if (provider == null) {
+            Toast.makeText(getApplicationContext(), "Lol, gps disabled", Toast.LENGTH_SHORT).show();
+        }
+
+        if (loc!=null){
+            onLocationChanged(loc);
+        }
+
+        LoadPointsService.startActionLoadPoints(this);
+    }
+
+    public void onLocationChanged(Location location) {
+        LatLng latlng=new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,(float) 14.6));
+    }
+
+    public void onEventMainThread(PointsLoaded event) {
+        List<Point> points = event.getPoints();
+        for (Point p : points) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLat(), p.getLng())).title(p.getTitle()));
+        }
     }
 }
