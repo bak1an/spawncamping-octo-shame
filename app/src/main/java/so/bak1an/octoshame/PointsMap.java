@@ -51,17 +51,12 @@ public class PointsMap extends FragmentActivity {
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
+
     private void setUpMap() {
 
         mMap.setMyLocationEnabled(true);
 
-        LocationManager lm=(LocationManager)getSystemService(LOCATION_SERVICE);
+        LocationManager lm = (LocationManager)getSystemService(LOCATION_SERVICE);
         String provider = lm.getBestProvider(new Criteria(), true);
         Location loc = lm.getLastKnownLocation(provider);
 
