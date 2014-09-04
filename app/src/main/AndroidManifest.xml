@@ -29,6 +29,15 @@
             android:name=".LoadPointsService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".ListActivity"
+            android:label="@string/title_activity_list"
+            android:parentActivityName=".PointsMap" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="so.bak1an.octoshame.PointsMap" />
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

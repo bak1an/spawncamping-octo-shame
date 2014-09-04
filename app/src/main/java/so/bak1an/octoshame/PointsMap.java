@@ -20,15 +20,17 @@ import de.greenrobot.event.EventBus;
 import generated.DaoSession;
 import generated.Point;
 import generated.PointDao;
+import so.bak1an.octoshame.base.BaseActivity;
 import so.bak1an.octoshame.event.PointsLoaded;
 import so.bak1an.octoshame.rest.PointsApi;
 
-public class PointsMap extends FragmentActivity {
+public class PointsMap extends BaseActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        tabName = "Map";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_points_map);
         setUpMapIfNeeded();
@@ -87,7 +89,7 @@ public class PointsMap extends FragmentActivity {
     public void onLocationChanged(Location location) {
         LatLng latlng=new LatLng(location.getLatitude(), location.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latlng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,(float) 14.6));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 13));
     }
 
     public void onEventMainThread(PointsLoaded event) {

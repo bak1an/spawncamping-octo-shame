@@ -3,5 +3,8 @@
 
     <string name="app_name">octoshame</string>
     <string name="title_activity_points_map">Points</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
